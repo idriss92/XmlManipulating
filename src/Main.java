@@ -208,7 +208,7 @@ public class Main {
 		}
 	}
 
-	static private void validateMyDtd(String dtdPath, String xmlPath) {
+	static private void validateMyDtd( String xmlPath, String dtdPath) {
         try {
             File xmlwithDtd = new File("XmlWithDTD.xml");
 
