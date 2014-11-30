@@ -31,12 +31,12 @@ public class Main {
 	
 	public static void main (String[] args) throws ParserConfigurationException, SAXException, IOException {
 		
-		System.out.println("Cette application vous permet d'effectuer 3 opérations ");
+		System.out.println("Cette application vous permet d'effectuer 3 oprations ");
 		
 		System.out.println("Menu");
-		System.out.println("Pour créer une école taper 0");
-		System.out.println("Pour valider un fichier xml à partir du schéma xml taper 1");
-		System.out.println("Pour valider un fichier xml à partir de la dtd taper 2");
+		System.out.println("Pour crer une cole taper 0");
+		System.out.println("Pour valider un fichier xml  partir du schma xml taper 1");
+		System.out.println("Pour valider un fichier xml  partir de la dtd taper 2");
 		
 		System.out.println();
 		System.out.println("Entrer votre choix : ");
@@ -46,36 +46,36 @@ public class Main {
 		switch(choix){
 			
 		case 0 :
-			System.out.println("Choix de création validée");
+			System.out.println("Choix de cration valide");
 			System.out.println();
 			createSchool();
 			break;
 		case 1 :
 			System.out.println("Choix de validation avec .XSD");
 			System.out.println();
-			System.out.println("Entrer le nom du fichier Xml précédé du chemin : ");
+			System.out.println("Entrer le nom du fichier Xml prcd du chemin : ");
 			Scanner recup = new Scanner (System.in);
 			String entree1 = recup.nextLine();
-			System.out.println("Entrer le nom du fichier XSD précédé du chemin : ");
+			System.out.println("Entrer le nom du fichier XSD prcd du chemin : ");
 			Scanner recupe = new Scanner (System.in);
 			String entree2 = recupe.nextLine();
-			validateXMLFileWithXsd(entree1,entree2);
+			validateXMLSchema(entree1,entree2);
 			break;
 			
 		case 2 : 
 			System.out.println("Choix de validation avec .DTD");
 			System.out.println();
-			System.out.println("Entrer le nom du fichier Xml précédé du chemin : ");
+			System.out.println("Entrer le nom du fichier Xml prcd du chemin : ");
 			Scanner recu = new Scanner (System.in);
 			String entre1 = recu.nextLine();
-			System.out.println("Entrer le nom du fichier DTD précédé du chemin : ");
+			System.out.println("Entrer le nom du fichier DTD prcd du chemin : ");
 			Scanner recue = new Scanner (System.in);
 			String entre2 = recue.nextLine();
-			validateXMLFileWithDtd(entre1,entre2);
+			validateDTD(entre1,entre2);
 			break;
 			
 		default :
-			System.out.println("Votre choix n'est pas pris en compte. Désole");
+			System.out.println("Votre choix n'est pas pris en compte. Dsole");
 			
 		}
 		
@@ -109,7 +109,7 @@ public class Main {
 				
 				//boolean decistion = false;
 				
-				System.out.println("Voulez vous creer des éleves ?");
+				System.out.println("Voulez vous creer des leves ?");
 				Scanner des = new Scanner(System.in);
 				String reponse = des.nextLine();
 				
@@ -117,7 +117,7 @@ public class Main {
 					return;
 				}
 				else{
-					System.out.println("Combien d'étudiants voulez vous créer : ");
+					System.out.println("Combien d'tudiants voulez vous crer : ");
 					Scanner te = new Scanner(System.in);
 					int nombreEleve = te.nextInt();
 					Element listEleve = doc.createElement("Eleves");
@@ -157,16 +157,16 @@ public class Main {
 	
 	static private void generateXMLFile(Document doc, File file){
         Source source = new DOMSource(doc);
-        // le rÈsultat de cette transformation sera un flux d'Ècriture dans
+        // le rsultat de cette transformation sera un flux d'criture dans
         // un fichier
         StreamResult resultat = new StreamResult(file);
          
-        // crÈation du transformateur XML
+        // cration du transformateur XML
         Transformer transfo = null;
         try {
             transfo = TransformerFactory.newInstance().newTransformer();
         } catch(TransformerConfigurationException e) {
-            System.err.println("Impossible de crÈer un transformateur XML.");
+            System.err.println("Impossible de crer un transformateur XML.");
             System.exit(1);
         }
          
@@ -175,10 +175,10 @@ public class Main {
         // sortie en XML
         transfo.setOutputProperty(OutputKeys.METHOD, "xml");
          
-        // inclut une dÈclaration XML (recommandÈ)
+        // inclut une dclaration XML (recommand)
         transfo.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
          
-        // codage des caractËres : UTF-8. Ce pourrait Ítre Ègalement ISO-8859-1
+        // codage des caractres : UTF-8. Ce pourrait tre galement ISO-8859-1
         transfo.setOutputProperty(OutputKeys.ENCODING, "utf-8");
          
         // idente le fichier XML
@@ -187,36 +187,14 @@ public class Main {
         try {
             transfo.transform(source, (javax.xml.transform.Result) resultat);
         } catch(TransformerException e) {
-            System.err.println("La transformation a ÈchouÈ : " + e);
+            System.err.println("La transformation a chou : " + e);
             System.exit(1);
         }
 
 }
-	
-	
-	static private void validateXMLFileWithXsd(String fichierXml, String schemaXsd) throws SAXException, IOException{		
-		SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-		
-		File schemalocate = new File(schemaXsd);
-		
-		Schema schema = factory.newSchema(schemalocate);
-		
-		Validator validator = schema.newValidator();
-		
-		Source source = new StreamSource(fichierXml);
-		
-		try{
-			validator.validate(source);
-			System.out.println("Le fichier "+fichierXml + " est valide par rapport au schéma "+schemaXsd);
-		}
-		catch(SAXException ex){
-			System.out.println(fichierXml + "est invalide car ");
-			System.out.print(ex.getMessage());
-		}
-		
-	}
-
+	/*
 	static private void validateXMLFileWithDtd(String fichierXml, String dtd) throws SAXException,IOException{
+
 		//InputSource is = new InputSource(new FileInputStream(fichierXml));
 		//Validator v = new Validator(is);
 		
@@ -228,11 +206,43 @@ public class Main {
 		
 		try{
 			validator.validate(source);
-			System.out.println("Le fichier "+fichierXml + " est valide par rapport au schéma "+dtd);
+			System.out.println("Le fichier "+fichierXml + " est valide par rapport au schma "+dtd);
 		}
 		catch(SAXException ex){
 			System.out.println(fichierXml + "est invalide car ");
 			System.out.print(ex.getMessage());
+		}
+	}
+*/
+
+	static private void validateDTD(String xmlPath, String dtdPath){
+		DocumentBuilderFactory docBuildFactory = DocumentBuilderFactory.newInstance();
+		docBuildFactory.setValidating(true);
+		DocumentBuilder docbuilder = null;
+		
+		try
+		{
+			docbuilder = docBuildFactory.newDocumentBuilder();
+			Document doc = docbuilder.parse(xmlPath);
+			System.out.println("Reussie");
+		}
+		catch(Exception e)
+		{
+			System.out.println("Echec "+e.getMessage());
+		}
+	}
+	static private void validateXMLSchema(String xmlPath,String xsdPath){
+		
+		try{
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = factory.newSchema(new File(xsdPath));
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(new File(xmlPath)));
+			System.out.println("Le fichier "+ xmlPath+ "est validé par rapport au fichier "+xsdPath);
+		}
+		catch(IOException|SAXException e){
+			
+			System.out.println("Le fichier est invalide car "+ e.getMessage());
 		}
 	}
 }
