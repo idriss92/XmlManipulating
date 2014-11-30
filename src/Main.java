@@ -71,7 +71,7 @@ public class Main {
 			System.out.println("Entrer le nom du fichier DTD prcd du chemin : ");
 			Scanner recue = new Scanner (System.in);
 			String entre2 = recue.nextLine();
-			validateDTD(entre1,entre2);
+			validateMyDtd(entre1,entre2);
 			break;
 			
 		default :
@@ -192,45 +192,7 @@ public class Main {
         }
 
 }
-	/*
-	static private void validateXMLFileWithDtd(String fichierXml, String dtd) throws SAXException,IOException{
-
-		//InputSource is = new InputSource(new FileInputStream(fichierXml));
-		//Validator v = new Validator(is);
-		
-		SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		File schemalocate = new File(dtd);
-		Schema schema = factory.newSchema(schemalocate);
-		Validator validator = schema.newValidator();
-		Source source = new StreamSource(fichierXml);
-		
-		try{
-			validator.validate(source);
-			System.out.println("Le fichier "+fichierXml + " est valide par rapport au schma "+dtd);
-		}
-		catch(SAXException ex){
-			System.out.println(fichierXml + "est invalide car ");
-			System.out.print(ex.getMessage());
-		}
-	}
-*/
-
-	static private void validateDTD(String xmlPath, String dtdPath){
-		DocumentBuilderFactory docBuildFactory = DocumentBuilderFactory.newInstance();
-		docBuildFactory.setValidating(true);
-		DocumentBuilder docbuilder = null;
-		
-		try
-		{
-			docbuilder = docBuildFactory.newDocumentBuilder();
-			Document doc = docbuilder.parse(xmlPath);
-			System.out.println("Reussie");
-		}
-		catch(Exception e)
-		{
-			System.out.println("Echec "+e.getMessage());
-		}
-	}
+	
 	static private void validateXMLSchema(String xmlPath,String xsdPath){
 		
 		try{
@@ -245,4 +207,46 @@ public class Main {
 			System.out.println("Le fichier est invalide car "+ e.getMessage());
 		}
 	}
+
+	static private void validateMyDtd(String dtdPath, String xmlPath) {
+        try {
+            File xmlwithDtd = new File("XmlWithDTD.xml");
+
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdPath);
+
+            transformer.transform(new StreamSource(xmlPath), new StreamResult(xmlwithDtd));
+
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+            factory.setValidating(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            // Set the error handler
+            builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
+                @Override
+                public void fatalError(SAXParseException spex) {
+                    System.out.println("fatal error : " + spex.getMessage());
+                }
+                @Override
+                public void error(SAXParseException spex) throws SAXException {
+                    throw spex;
+                }
+                @Override
+                public void warning(SAXParseException spex) {
+                    System.out.println("warning : " + spex.getMessage());
+                }
+            });
+
+            builder.parse(xmlwithDtd);
+            xmlwithDtd.delete();
+            System.out.println("Succes");
+        } catch (TransformerException | ParserConfigurationException | SAXException | IOException e) {
+            System.out.println("Fail");
+        	
+        }
+    }
+
 }
